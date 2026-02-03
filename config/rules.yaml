@@ -1,0 +1,13 @@
+document_types:
+  grn:
+    folder: "Grn"
+    filename_patterns:
+      - "^GR"
+      - "^GRN"
+      - "GRN"
+
+  po:
+    folder: "po"
+    filename_patterns:
+      - "^PO"
+      - "PO"

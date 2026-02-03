@@ -1,0 +1,16 @@
+# Secrets
+credentials.json
+token.json
+
+# Runtime data
+logs/
+temp/
+quarantine/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# OS junk
+.DS_Store
+Thumbs.db
