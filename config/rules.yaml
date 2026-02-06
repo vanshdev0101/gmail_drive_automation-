@@ -1,13 +1,32 @@
 document_types:
   grn:
-    folder: "Grn"
+    folder: "GRN"
     filename_patterns:
-      - "^GR"
-      - "^GRN"
       - "GRN"
+      - "GR0"
+      - "GOODS"
+      - "RECEIPT"
 
   po:
     folder: "po"
     filename_patterns:
-      - "^PO"
       - "PO"
+      - "PURCHASE"
+      - "ORDER"
+
+  db:
+    folder: "DB"
+    filename_patterns:
+      - "DEBIT"
+      - "DEBIT NOTE"
+      - "DB"
+      - "db"
+
+  lr:
+    folder: "LR"
+    filename_patterns:
+      - "LR"
+      - "LORRY"
+      - "LORRY RECEIPT"
+      - "CONSIGNMENT"
+      - "TRANSPORT"

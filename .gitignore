@@ -1,16 +1,66 @@
-# Secrets
-credentials.json
-token.json
-
-# Runtime data
-logs/
-temp/
-quarantine/
-
-# Python cache
+# ---------------------------
+# Python
+# ---------------------------
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+dist/
+build/
 
-# OS junk
+# ---------------------------
+# Virtual environments
+# ---------------------------
+venv/
+env/
+.venv/
+conda-env/
+.anaconda/
+
+# ---------------------------
+# OS / Editor junk
+# ---------------------------
 .DS_Store
 Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# ---------------------------
+# Gmail / Google API secrets
+# ---------------------------
+token.json
+credentials.json
+
+# ---------------------------
+# Logs
+# ---------------------------
+*.log
+logs/
+*.out
+
+# ---------------------------
+# Downloaded data (IMPORTANT)
+# ---------------------------
+Sarvana/
+
+# ---------------------------
+# Temporary / keep files
+# ---------------------------
+.keep
+
+# ---------------------------
+# YAML runtime configs (optional)
+# Uncomment if configs contain secrets
+# ---------------------------
+ config/settings.yaml
+
+# ---------------------------
+# Scripts / reports generated locally
+# ---------------------------
+count_downloads.py
+verify_gmail_attachments.py
