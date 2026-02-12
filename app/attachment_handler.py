@@ -4,9 +4,12 @@ from google.oauth2.credentials import Credentials
 from app.classifier import detect_branch, detect_doc_type
 from app.folder_manager import get_target_folder
 from app.logger import get_app_logger
+from app.auth import SCOPES
+
+ 
 
 logger = get_app_logger()
-SCOPES = ["https://www.googleapis.com/auth/gmail.modify"]
+
 
 def _walk_parts(parts):
     for part in parts:
@@ -45,20 +48,13 @@ def download_attachments(message_id):
         attachment_id = part.get("body", {}).get("attachmentId")
 
         if not attachment_id:
-         continue
+            continue
 
         if not filename:
-         filename = f"{message_id}.pdf"
-
-
-        # DEBUG LOGS
-        logger.info(f"[DEBUG] Subject: {subject}")
-        logger.info(f"[DEBUG] Filename: {filename}")
+            filename = f"{message_id}.pdf"
 
         branch = detect_branch(subject + " " + filename)
         doc_type = detect_doc_type(subject + " " + filename)
-
-        logger.info(f"[DEBUG] Detected branch={branch}, doc_type={doc_type}")
 
         if not branch or not doc_type:
             logger.warning(f"Unclassified file skipped | {filename}")
@@ -73,12 +69,23 @@ def download_attachments(message_id):
         ).execute()
 
         data = base64.urlsafe_b64decode(attachment["data"])
-        file_path = target_dir / filename
+
+        safe_name = f"{message_id}_{filename}"
+        file_path = target_dir / safe_name
 
         with open(file_path, "wb") as f:
             f.write(data)
 
+        from app.drive_uploader import get_or_create_folder, upload_file
+
+        drive_root = get_or_create_folder("Sarvana")
+        branch_folder = get_or_create_folder(branch, drive_root)
+        doc_folder = get_or_create_folder(doc_type.upper(), branch_folder)
+
+        upload_file(file_path, doc_folder)
+
         saved.append(str(file_path))
-        logger.info(f"Saved file | {file_path}")
+        logger.info(f"Saved & uploaded | {file_path}")
 
     return saved
+

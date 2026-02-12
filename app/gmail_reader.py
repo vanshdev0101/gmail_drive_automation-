@@ -2,10 +2,11 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
+from app.auth import SCOPES
 import yaml
 import os
 
-SCOPES = ["https://www.googleapis.com/auth/gmail.modify"]
+ 
 
 def _load_settings():
     with open("config/settings.yaml", "r") as f:

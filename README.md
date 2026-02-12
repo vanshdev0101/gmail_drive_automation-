@@ -1,265 +1,236 @@
-Gmail Attachment Automation Framework (v1)
-
-A config-driven Python framework to automatically fetch emails from Gmail, extract attachments, classify them, and store or upload them in any folder structure you define.
-
-This project is intentionally built for developers / power users, not end-users.
-All behavior is controlled through configuration files and small, readable code changes.
-
-🎯 What this project does
-
-At a high level, the system performs:
-
-Gmail → Filter → Extract → Classify → Store → (Optional) Upload to Drive
-
-
-Specifically, it:
-
-Connects to Gmail using OAuth
-
-Filters emails based on user-defined rules
-
-Extracts all attachments (including nested MIME attachments)
-
-Classifies attachments using YAML rules
-
-Builds a custom folder structure
-
-Saves files locally
-
-Optionally uploads files to Google Drive
-
-Marks processed emails as read + labeled
-
-Ensures emails are not processed twice
-
-🧠 Who this is for
-
-This framework is designed for:
-
-Developers
-
-Automation engineers
-
-Power users comfortable with config files
-
-Anyone who wants full control, not a black-box tool
-
-It is not intended for non-technical users.
-
-🧩 Example use cases
-
-Accounting documents (Invoices, GRNs, POs, Debit Notes)
-
-HR resume intake
-
-Assignment collection (college / training)
-
-Client report ingestion
-
-Legal or compliance archiving
-
-Personal Gmail organization
-
-If the workflow is email → attachment → folder, this framework fits.
-
-🏗️ Project architecture
-app/
- ├── main.py                # Entry point / orchestration
- ├── gmail_reader.py        # Fetch target emails
- ├── attachment_handler.py # Extract & process attachments
- ├── classifier.py          # Rule-based classification
- ├── folder_manager.py      # Folder structure logic
- ├── drive_uploader.py      # Google Drive upload
- ├── gmail_labeler.py       # Mark emails as processed
- ├── auth.py                # Shared OAuth scopes
- └── logger.py              # Logging setup
-
-config/
- ├── rules.yaml             # Document classification rules
- ├── branches.yaml          # Logical grouping rules (optional)
- └── settings.yaml          # Gmail filters & labels
-
-🔐 Authentication model
-
-The system uses one OAuth token with combined scopes:
-
-https://www.googleapis.com/auth/gmail.modify
-https://www.googleapis.com/auth/drive.file
-
-
-credentials.json is provided by the user
-
-token.json is generated automatically on first run
-
-Tokens are reused across runs
-
-⚙️ Installation & setup
-1️⃣ Clone the repository
-git clone <repo-url>
-cd gmail_drive_automation
-
-2️⃣ Install dependencies
-pip install -r requirements.txt
-
-3️⃣ Add Google credentials
-
-Place your OAuth credentials file in the project root:
-
-credentials.json
-
-
-⚠️ Never commit this file.
-
-4️⃣ Enable APIs in Google Cloud
-
-In the same Google Cloud project:
-
-Enable Gmail API
-
-Enable Google Drive API
-
-OAuth client type must be Desktop App
-
-5️⃣ Configure email selection
-
-Edit:
-
-config/settings.yaml
-
-
-Example:
-
-gmail:
-  allowed_senders:
-    - example@company.com
-    - reports@service.com
-
-processing:
-  gmail_label_processed: "Processed"
-
-
-This defines which emails are considered.
-
-6️⃣ Define classification rules
-
-Edit:
-
-config/rules.yaml
-
-
-Example:
-
-document_types:
-  invoice:
-    folder: "Invoices"
-    filename_patterns:
-      - "INVOICE"
-      - "^INV"
-
-  resume:
-    folder: "Resumes"
-    filename_patterns:
-      - "CV"
-      - "RESUME"
-
-
-No code changes needed to add new document types.
-
-7️⃣ Define your folder structure
-
-Edit:
-
-folder_manager.py
-
-
-This file decides how folders are built.
-
-Examples you can implement:
-
-By sender
-
-By document type
-
-By date (year/month)
-
-By project name
-
-Any custom hierarchy
-
-This is intentionally left flexible.
-
-8️⃣ Run the automation
-python -m app.main
-
-
-On first run:
-
-Browser opens
-
-Google asks for Gmail + Drive permissions
-
-Token is created automatically
-
-🔄 Processing flow (v1)
-
-For each eligible email:
-
-Fetch email
-
-Extract all attachments
-
-Classify using rules
-
-Build folder path
-
-Save file locally
-
-Upload to Google Drive (if enabled)
-
-Mark email as read + labeled
-
-Emails are processed exactly once.
-
-🔧 Customizing for your own workflow
-
-You typically only need to change:
-
-config/settings.yaml → which emails
-
-config/rules.yaml → how files are classified
-
-folder_manager.py → folder structure
-
-Core Gmail / Drive logic stays untouched.
-
-🛑 What this project does NOT assume
-
-No fixed document types
-
-No fixed folder names
-
-No business-specific logic
-
-No UI / CLI wizard
-
-No opinionated structure
-
-Everything is user-defined.
-
-🧪 Debugging tips
-
-If Drive upload fails → delete token.json and re-auth
-
-If classification fails → check YAML patterns
-
-If emails repeat → check processed label
-
-Logs provide full trace per run
-
-🔒 Security notes
-
-Never commit credentials.json or token.json
-
-OAuth permissions are limited to required scopes
-
-Drive access is file-level, not full Drive access
+Gmail Attachment Automation Framework
+ A config-driven Python framework for automating the extraction, classification, and storage of Gmail attachments.
+ 
+ This project is designed as a reusable automation foundation, not a domain-specific script.
+ Users define which emails to process, how attachments are classified, and what folder structure is created through configuration files and minimal code changes.
+ 
+ Overview
+ This framework automates the following pipeline:
+ 
+ Gmail → Filter Emails → Extract Attachments → Classify → Store → (Optional) Upload to Google Drive
+ It is intended for developers and power users who want full control over their email-based document workflows.
+ 
+ Key Features
+ Gmail integration using OAuth 2.0
+ 
+ Configurable email filtering (sender-based)
+ 
+ Reliable extraction of all attachments (including nested MIME parts)
+ 
+ Rule-based attachment classification using YAML
+ 
+ Fully customizable folder structure
+ 
+ Optional Google Drive upload
+ 
+ Idempotent processing using Gmail labels
+ 
+ Modular, extensible architecture
+ 
+ Intended Audience
+ This project is suitable for users who are comfortable with:
+ 
+ Python
+ 
+ Configuration files (YAML)
+ 
+ OAuth-based APIs
+ 
+ It is not intended as a no-code or GUI-based tool.
+ 
+ Example Use Cases
+ Accounting document automation (Invoices, GRNs, POs, Debit Notes)
+ 
+ Resume or application intake
+ 
+ Assignment or report collection
+ 
+ Client document ingestion
+ 
+ Legal or compliance archiving
+ 
+ Personal Gmail organization
+ 
+ Project Structure
+ app/
+  ├── main.py                # Application entry point
+  ├── gmail_reader.py        # Gmail message retrieval
+  ├── attachment_handler.py # Attachment extraction & processing
+  ├── classifier.py          # Rule-based classification logic
+  ├── folder_manager.py      # Folder structure definition
+  ├── drive_uploader.py      # Optional Google Drive upload
+  ├── gmail_labeler.py       # Gmail labeling logic
+  ├── auth.py                # Shared OAuth scopes
+  └── logger.py              # Logging configuration
+ 
+ config/
+  ├── settings.example.yaml  # Email filtering & processing settings
+  ├── rules.example.yaml     # Document classification rules
+  └── branches.example.yaml  # Optional grouping logic
+ Authentication
+ The framework uses OAuth 2.0 with a single token containing combined scopes:
+ 
+ Gmail read/modify access
+ 
+ Google Drive file upload access (optional)
+ 
+ Required APIs
+ Gmail API
+ 
+ Google Drive API
+ 
+ Required OAuth Client Type
+ Desktop Application
+ 
+ Users must provide their own credentials.json.
+ OAuth tokens are generated automatically on first run.
+ 
+ Installation
+ 1. Clone the repository
+ git clone <repository-url>
+ cd gmail-attachment-automation
+ 2. Install dependencies
+ pip install -r requirements.txt
+ 3. Add OAuth credentials
+ Place your OAuth client file in the project root:
+ 
+ credentials.json
+ Do not commit this file.
+ 
+ Configuration
+ This framework is configuration-first.
+ Most users will not need to modify Python code.
+ 
+ Email Selection
+ Copy and edit:
+ 
+ config/settings.example.yaml → config/settings.yaml
+ Example:
+ 
+ gmail:
+   allowed_senders:
+     - example@gmail.com
+     - sender@domain.com
+ 
+ processing:
+   gmail_label_processed: "Processed"
+ Attachment Classification
+ Copy and edit:
+ 
+ config/rules.example.yaml → config/rules.yaml
+ Example:
+ 
+ document_types:
+   invoice:
+     folder: "Invoices"
+     filename_patterns:
+       - "INVOICE"
+       - "^INV"
+ 
+   resume:
+     folder: "Resumes"
+     filename_patterns:
+       - "CV"
+       - "RESUME"
+ Folder Structure
+ Folder hierarchy is defined in:
+ 
+ folder_manager.py
+ Users may implement any structure they require, for example:
+ 
+ By sender
+ 
+ By document type
+ 
+ By date (year/month)
+ 
+ By project or client
+ 
+ This design is intentionally flexible.
+ 
+ Running the Application
+ python -m app.main
+ On first run:
+ 
+ A browser window will open
+ 
+ Google will request Gmail (and Drive, if enabled) permissions
+ 
+ An OAuth token will be generated automatically
+ 
+ Processing Logic
+ For each eligible email:
+ 
+ Retrieve email
+ 
+ Extract all attachments
+ 
+ Classify attachments using rules
+ 
+ Build folder path
+ 
+ Save files locally
+ 
+ Upload to Google Drive (if enabled)
+ 
+ Mark email as processed
+ 
+ Emails are processed only once.
+ 
+ Customization Guidelines
+ To adapt this framework for a new workflow:
+ 
+ Update email filters (settings.yaml)
+ 
+ Define classification rules (rules.yaml)
+ 
+ Adjust folder structure logic (folder_manager.py)
+ 
+ Enable or disable Drive upload as needed
+ 
+ Core Gmail and OAuth logic should remain unchanged.
+ 
+ Security Notes
+ Never commit credentials.json or token.json
+ 
+ OAuth permissions are limited to required scopes
+ 
+ Google Drive access is restricted to files created by the app
+ 
+ Versioning
+ Current Status: v1 (Stable)
+ v1 indicates:
+ 
+ Core pipeline is complete
+ 
+ Authentication flow is correct
+ 
+ Configuration model is stable
+ 
+ No interactive CLI setup is included by design
+ 
+ Future versions may introduce optional helpers if real usage demand exists.
+ 
+ License
+ MIT License (or as applicable)
+ 
+ Final Notes
+ This project is intentionally designed as a framework, not a finished product.
+ 
+ If you can define your workflow in terms of:
+ 
+ “Which emails, which attachments, which structure”
+ 
+ This framework can automate it with minimal effort.
+ 
+ If you want, I can also:
+ 
+ review the final public repo before you push
+ 
+ help you extract a clean template from your private version
+ 
+ write a short “Quick Start” for developers
+ 
+ Just tell me.
+ 
+ 

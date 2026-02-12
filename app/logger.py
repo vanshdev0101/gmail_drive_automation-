@@ -15,18 +15,28 @@ def _create_handler(log_file, level):
     handler.setLevel(level)
     return handler
 
+import logging
+import sys
+
 def get_app_logger():
-    logger = logging.getLogger("app")
+    logger = logging.getLogger("gmail_automation")
+
     if logger.handlers:
         return logger
 
     logger.setLevel(logging.INFO)
-    Path("logs").mkdir(exist_ok=True)
 
-    handler = _create_handler("logs/app.log", logging.INFO)
+    handler = logging.StreamHandler(sys.stdout)
+    formatter = logging.Formatter(
+        "%(asctime)s | %(levelname)s | %(message)s"
+    )
+    handler.setFormatter(formatter)
+
     logger.addHandler(handler)
+    logger.propagate = False
 
     return logger
+
 
 def get_audit_logger():
     logger = logging.getLogger("audit")
