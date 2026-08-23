@@ -54,10 +54,9 @@ Sarvana/
 .keep
 
 # ---------------------------
-# YAML runtime configs (optional)
-# Uncomment if configs contain secrets
+# YAML runtime configs (contains real sender addresses)
 # ---------------------------
- config/settings.yaml
+config/settings.yaml
 
 # ---------------------------
 # Scripts / reports generated locally

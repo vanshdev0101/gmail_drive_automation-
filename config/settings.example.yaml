@@ -1,0 +1,22 @@
+gmail:
+  allowed_senders:
+    - example@gmail.com
+    - sender@domain.com
+
+  search_query: "has:attachment"
+
+paths:
+  temp_download: "temp/downloads"
+  quarantine: "quarantine/infected_files"
+  logs: "logs"
+
+drive:
+  root_folder: "YourRootFolder"
+
+security:
+  antivirus:
+    engine: "clamav"
+    enabled: false
+
+processing:
+  gmail_label_processed: "PROCESSED_BY_AUTOMATION"
